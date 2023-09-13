@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('git clone') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/sahid3065/DevOps.git']])
+            }
+        }
+        stage('docker build') {
+            steps {
+                sh 'docker build -t sahid:${BUILD_NUMBER} .'
+            }
+        }
+        stage('docker run') {
+            steps {
+                sh 'docker run -itd --name sahid -p 8090:80 sahid:${BUILD_NUMBER}'
+            }
+        }
+    }
+}
